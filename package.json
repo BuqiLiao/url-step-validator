@@ -1,6 +1,6 @@
 {
   "name": "url-step-validator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A flexible URL validation library with customizable rules for protocols, hosts, ports, and query parameters.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
