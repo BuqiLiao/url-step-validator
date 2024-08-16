@@ -1,6 +1,6 @@
 import { isString, merge, isNil } from "lodash-es";
 import { validateWhitelist, validateBlacklist } from "./utils";
-import type { URLValidationOptions } from "./index.d";
+import type { URLValidationOptions } from "../types";
 
 const defaultOptions: URLValidationOptions = {
   protocol_config: {

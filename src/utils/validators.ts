@@ -1,5 +1,5 @@
 import { isIP, isFQDN } from "validator";
-import type { HostType } from "../index.d";
+import type { HostType } from "../../types";
 
 export const hostTypeValidationMap: { [key in HostType]?: (value: string) => boolean } = {
   FQDN: (value) => isFQDN(value),

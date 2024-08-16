@@ -1,4 +1,4 @@
-import type { URLValidationOptions } from "./index.d";
+import type { URLValidationOptions } from "../types";
 export declare const isValidUrl: (value: string, options: URLValidationOptions) => {
     fragment?: string | undefined;
     query?: URLSearchParams | undefined;
