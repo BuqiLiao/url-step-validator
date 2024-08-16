@@ -1,0 +1,22 @@
+{
+  "name": "url-step-validator",
+  "version": "1.0.0",
+  "description": "A flexible URL validation library with customizable rules for protocols, hosts, ports, and query parameters.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "url",
+    "validation",
+    "validator",
+    "protocol",
+    "host",
+    "port",
+    "query",
+    "fragment",
+    "sanitization"
+  ],
+  "author": "Buqi Liao",
+  "license": "MIT"
+}
