@@ -1,29 +1,26 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateWhitelist = void 0;
-const lodash_1 = require("lodash");
-const validators_1 = require("./validators");
+import { isNil } from "lodash-es";
+import { validateCondition, isInRange, hostTypeValidationMap } from "./validators.js";
 const validateWhitelistAND = (title, value, whitelist) => {
     const { values, types, start_with, end_with, contains, interval } = whitelist;
-    values && (0, validators_1.validateCondition)(values.includes(value), `${title} should be "${values.join('" or "')}"`);
+    values && validateCondition(values.includes(value), `${title} should be "${values.join('" or "')}"`);
     types &&
-        (0, validators_1.validateCondition)(types.some((type) => { var _a; return (_a = validators_1.hostTypeValidationMap[type]) === null || _a === void 0 ? void 0 : _a.call(validators_1.hostTypeValidationMap, value); }), `${title} should be of type "${types.join('" or "')}"`);
+        validateCondition(types.some((type) => hostTypeValidationMap[type]?.(value)), `${title} should be of type "${types.join('" or "')}"`);
     start_with &&
-        (0, validators_1.validateCondition)(start_with.some((prefix) => value.startsWith(prefix)), `${title} should start with "${start_with.join('" or "')}"`);
+        validateCondition(start_with.some((prefix) => value.startsWith(prefix)), `${title} should start with "${start_with.join('" or "')}"`);
     end_with &&
-        (0, validators_1.validateCondition)(end_with.some((suffix) => value.endsWith(suffix)), `${title} should end with "${end_with.join('" or "')}"`);
+        validateCondition(end_with.some((suffix) => value.endsWith(suffix)), `${title} should end with "${end_with.join('" or "')}"`);
     contains &&
-        (0, validators_1.validateCondition)(contains.some((substring) => value.includes(substring)), `${title} should contain "${contains.join('" or "')}"`);
+        validateCondition(contains.some((substring) => value.includes(substring)), `${title} should contain "${contains.join('" or "')}"`);
     interval &&
-        (0, validators_1.validateCondition)((0, validators_1.isInRange)(parseInt(value), interval), `${title} should be between ${interval[0]} and ${interval[1]}`);
+        validateCondition(isInRange(parseInt(value), interval), `${title} should be between ${interval[0]} and ${interval[1]}`);
 };
 const validateWhitelistOR = (title, value, whitelist) => {
     const isWhitelisted = (whitelist.values && whitelist.values.includes(value)) ||
-        (whitelist.types && whitelist.types.some((type) => { var _a; return (_a = validators_1.hostTypeValidationMap[type]) === null || _a === void 0 ? void 0 : _a.call(validators_1.hostTypeValidationMap, value); })) ||
+        (whitelist.types && whitelist.types.some((type) => hostTypeValidationMap[type]?.(value))) ||
         (whitelist.start_with && whitelist.start_with.some((prefix) => value.startsWith(prefix))) ||
         (whitelist.end_with && whitelist.end_with.some((suffix) => value.endsWith(suffix))) ||
         (whitelist.contains && whitelist.contains.some((substring) => value.includes(substring))) ||
-        (whitelist.interval && (0, validators_1.isInRange)(parseInt(value), whitelist.interval));
+        (whitelist.interval && isInRange(parseInt(value), whitelist.interval));
     if (!isWhitelisted) {
         const conditions = [];
         if (whitelist.values)
@@ -41,10 +38,9 @@ const validateWhitelistOR = (title, value, whitelist) => {
         throw new Error(`${title} should be ${conditions.join(" or ")}`);
     }
 };
-const validateWhitelist = (title, value, whitelist) => {
-    if ((0, lodash_1.isNil)(whitelist) || (0, lodash_1.isNil)(value))
+export const validateWhitelist = (title, value, whitelist) => {
+    if (isNil(whitelist) || isNil(value))
         return;
-    const combine = (whitelist === null || whitelist === void 0 ? void 0 : whitelist.combine) || "and";
+    const combine = whitelist?.combine || "and";
     combine === "and" ? validateWhitelistAND(title, value, whitelist) : validateWhitelistOR(title, value, whitelist);
 };
-exports.validateWhitelist = validateWhitelist;

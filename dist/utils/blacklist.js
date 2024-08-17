@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateBlacklist = void 0;
-const lodash_1 = require("lodash");
-const validators_1 = require("./validators");
+import { isNil } from "lodash-es";
+import { validateCondition, isInRange, hostTypeValidationMap } from "./validators.js";
 const validateBlacklistAND = (title, value, blacklist) => {
     const isBlacklisted = blacklist.values &&
         blacklist.values.includes(value) &&
         blacklist.types &&
-        blacklist.types.some((type) => { var _a; return (_a = validators_1.hostTypeValidationMap[type]) === null || _a === void 0 ? void 0 : _a.call(validators_1.hostTypeValidationMap, value); }) &&
+        blacklist.types.some((type) => hostTypeValidationMap[type]?.(value)) &&
         blacklist.start_with &&
         blacklist.start_with.some((prefix) => value.startsWith(prefix)) &&
         blacklist.end_with &&
@@ -15,7 +12,7 @@ const validateBlacklistAND = (title, value, blacklist) => {
         blacklist.contains &&
         blacklist.contains.some((substring) => value.includes(substring)) &&
         blacklist.interval &&
-        (0, validators_1.isInRange)(parseInt(value), blacklist.interval);
+        isInRange(parseInt(value), blacklist.interval);
     if (!isBlacklisted) {
         const conditions = [];
         if (blacklist.values)
@@ -35,22 +32,21 @@ const validateBlacklistAND = (title, value, blacklist) => {
 };
 const validateBlacklistOR = (title, value, blacklist) => {
     const { values, types, start_with, end_with, contains, interval } = blacklist;
-    values && (0, validators_1.validateCondition)(!values.includes(value), `${title} should be "${values.join('" or "')}"`);
+    values && validateCondition(!values.includes(value), `${title} should not be "${values.join('" or "')}"`);
     types &&
-        (0, validators_1.validateCondition)(!types.some((type) => { var _a; return (_a = validators_1.hostTypeValidationMap[type]) === null || _a === void 0 ? void 0 : _a.call(validators_1.hostTypeValidationMap, value); }), `${title} should be of type "${types.join('" or "')}"`);
+        validateCondition(!types.some((type) => hostTypeValidationMap[type]?.(value)), `${title} should not be of type "${types.join('" or "')}"`);
     start_with &&
-        (0, validators_1.validateCondition)(!start_with.some((prefix) => value.startsWith(prefix)), `${title} should start with "${start_with.join('" or "')}"`);
+        validateCondition(!start_with.some((prefix) => value.startsWith(prefix)), `${title} should not start with "${start_with.join('" or "')}"`);
     end_with &&
-        (0, validators_1.validateCondition)(!end_with.some((suffix) => value.endsWith(suffix)), `${title} should end with "${end_with.join('" or "')}"`);
+        validateCondition(!end_with.some((suffix) => value.endsWith(suffix)), `${title} should not end with "${end_with.join('" or "')}"`);
     contains &&
-        (0, validators_1.validateCondition)(contains.some((substring) => value.includes(substring)), `${title} should contain "${contains.join('" or "')}"`);
+        validateCondition(!contains.some((substring) => value.includes(substring)), `${title} should not contain "${contains.join('" or "')}"`);
     interval &&
-        (0, validators_1.validateCondition)(!(0, validators_1.isInRange)(parseInt(value), interval), `${title} should be between ${interval[0]} and ${interval[1]}`);
+        validateCondition(!isInRange(parseInt(value), interval), `${title} should not be between ${interval[0]} and ${interval[1]}`);
 };
-const validateBlacklist = (title, value, blacklist) => {
-    if ((0, lodash_1.isNil)(blacklist) || (0, lodash_1.isNil)(value))
+export const validateBlacklist = (title, value, blacklist) => {
+    if (isNil(blacklist) || isNil(value))
         return;
-    const combine = (blacklist === null || blacklist === void 0 ? void 0 : blacklist.combine) || "or";
+    const combine = blacklist?.combine || "or";
     combine === "and" ? validateBlacklistAND(title, value, blacklist) : validateBlacklistOR(title, value, blacklist);
 };
-exports.validateBlacklist = validateBlacklist;

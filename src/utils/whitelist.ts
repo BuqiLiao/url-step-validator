@@ -1,6 +1,6 @@
-import { isNil } from "lodash";
-import { validateCondition, isInRange, hostTypeValidationMap } from "./validators";
-import type { HostType } from "../../types";
+import { isNil } from "lodash-es";
+import { validateCondition, isInRange, hostTypeValidationMap } from "./validators.js";
+import type { HostType } from "../../types/index.js";
 
 const validateWhitelistAND = (title: string, value: string, whitelist: any) => {
   const { values, types, start_with, end_with, contains, interval } = whitelist;

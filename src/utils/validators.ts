@@ -1,10 +1,10 @@
-import { isIP, isFQDN } from "validator";
-import type { HostType } from "../../types";
+import validator from 'validator';
+import type { HostType } from "../../types/index.js";
 
 export const hostTypeValidationMap: { [key in HostType]?: (value: string) => boolean } = {
-  FQDN: (value) => isFQDN(value),
-  ipv4: (value) => isIP(value, 4),
-  ipv6: (value) => isIP(value, 6)
+  FQDN: (value) => validator.isFQDN(value),
+  ipv4: (value) => validator.isIP(value, 4),
+  ipv6: (value) => validator.isIP(value, 6)
 };
 
 export const validateCondition = (condition: boolean, errMsg: string) => {

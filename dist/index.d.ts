@@ -1,4 +1,4 @@
-import type { URLValidationOptions } from "../types";
+import type { URLValidationOptions, StringOptions } from "../types/index.js";
 export declare const isValidUrl: (value: string, options: URLValidationOptions) => {
     fragment?: string | undefined;
     query?: URLSearchParams | undefined;
@@ -6,3 +6,4 @@ export declare const isValidUrl: (value: string, options: URLValidationOptions) 
     host?: string | undefined;
     protocol?: string | undefined;
 };
+export declare const isValidString: (value: string, errorLabel?: string, options?: StringOptions) => void;

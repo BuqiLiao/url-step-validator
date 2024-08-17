@@ -1,4 +1,4 @@
-import type { HostType } from "../../types";
+import type { HostType } from "../../types/index.js";
 export declare const hostTypeValidationMap: {
     [key in HostType]?: (value: string) => boolean;
 };

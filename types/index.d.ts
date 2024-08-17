@@ -49,3 +49,10 @@ export interface URLValidationOptions {
     blacklist?: BaseOptions;
   };
 }
+
+export interface StringOptions {
+  required?: boolean;
+  whitelist?: BaseOptions;
+  blacklist?: BaseOptions;
+}
+

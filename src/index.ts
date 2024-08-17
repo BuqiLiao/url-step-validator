@@ -1,6 +1,6 @@
 import { isString, merge, isNil } from "lodash-es";
-import { validateWhitelist, validateBlacklist } from "./utils";
-import type { URLValidationOptions } from "../types";
+import { validateWhitelist, validateBlacklist } from "@/utils/index.js";
+import type { URLValidationOptions, StringOptions } from "../types/index.js";
 
 const defaultOptions: URLValidationOptions = {
   protocol_config: {
@@ -127,4 +127,15 @@ export const isValidUrl = (value: string, options: URLValidationOptions) => {
     ...(!isNil(query) && { query }),
     ...(!isNil(fragment) && { fragment })
   };
+};
+
+export const isValidString = (value: string, errorLabel: string = "String", options?: StringOptions) => {
+  if (!isString(value)) {
+    throw new Error(`${errorLabel} should be a string`);
+  }
+  if (options?.required && !value) {
+    throw new Error(`${errorLabel} should not be empty`);
+  }
+  validateWhitelist(errorLabel, value, options?.whitelist);
+  validateBlacklist(errorLabel, value, options?.blacklist);
 };

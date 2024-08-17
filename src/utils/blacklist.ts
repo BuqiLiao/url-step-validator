@@ -1,6 +1,6 @@
-import { isNil } from "lodash";
-import { validateCondition, isInRange, hostTypeValidationMap } from "./validators";
-import type { HostType } from "../../types";
+import { isNil } from "lodash-es";
+import { validateCondition, isInRange, hostTypeValidationMap } from "./validators.js";
+import type { HostType } from "../../types/index.js";
 
 const validateBlacklistAND = (title: string, value: string, blacklist: any) => {
   const isBlacklisted =
@@ -33,31 +33,31 @@ const validateBlacklistAND = (title: string, value: string, blacklist: any) => {
 const validateBlacklistOR = (title: string, value: string, blacklist: any) => {
   const { values, types, start_with, end_with, contains, interval } = blacklist;
 
-  values && validateCondition(!values.includes(value), `${title} should be "${values.join('" or "')}"`);
+  values && validateCondition(!values.includes(value), `${title} should not be "${values.join('" or "')}"`);
   types &&
     validateCondition(
       !types.some((type: HostType) => hostTypeValidationMap[type]?.(value)),
-      `${title} should be of type "${types.join('" or "')}"`
+      `${title} should not be of type "${types.join('" or "')}"`
     );
   start_with &&
     validateCondition(
       !start_with.some((prefix: string) => value.startsWith(prefix)),
-      `${title} should start with "${start_with.join('" or "')}"`
+      `${title} should not start with "${start_with.join('" or "')}"`
     );
   end_with &&
     validateCondition(
       !end_with.some((suffix: string) => value.endsWith(suffix)),
-      `${title} should end with "${end_with.join('" or "')}"`
+      `${title} should not end with "${end_with.join('" or "')}"`
     );
   contains &&
     validateCondition(
-      contains.some((substring: string) => value.includes(substring)),
-      `${title} should contain "${contains.join('" or "')}"`
+      !contains.some((substring: string) => value.includes(substring)),
+      `${title} should not contain "${contains.join('" or "')}"`
     );
   interval &&
     validateCondition(
       !isInRange(parseInt(value), interval),
-      `${title} should be between ${interval[0]} and ${interval[1]}`
+      `${title} should not be between ${interval[0]} and ${interval[1]}`
     );
 };
 
